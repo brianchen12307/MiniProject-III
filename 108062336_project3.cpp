@@ -302,7 +302,7 @@ void read_valid_spots(std::ifstream& fin) {
 
 void write_valid_spot(std::ofstream& fout) {
     // Remember to flush the output to ensure the last action is written to file.
-    int flag = 0;
+    int flag = 1;
     Point p;
     State AI(player, board, next_valid_spots);
 
@@ -311,21 +311,19 @@ void write_valid_spot(std::ofstream& fout) {
     for (Point it : AI.next_valid_spots) {
         if (it == a || it == b || it == c || it == d) {
             p = it;
-            flag = 1;
+            flag = 0;
             break;
         }
     }
-    if (!flag) {
+    if (flag) {
         //alphabeta
         Point a(0, 0, INT_MIN), b(0, 0, INT_MAX);
         p = alphabeta(AI, a, b, 1);
 
         //minimax
         //p = minmax(AI, 1);
-
-
-        fout << p.x << " " << p.y << std::endl;
     }
+    fout << p.x << " " << p.y << std::endl;
     fout.flush();
 }
 
