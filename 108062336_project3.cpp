@@ -20,6 +20,9 @@ struct Point {
         this->state_value = rhs.state_value;
         return *this;
     }
+    bool operator==(const Point& rhs) const {
+        return x == rhs.x && y == rhs.y;
+    }
     Point operator+(const Point& rhs) const {
         return Point(x + rhs.x, y + rhs.y);
     }
@@ -299,19 +302,30 @@ void read_valid_spots(std::ifstream& fin) {
 
 void write_valid_spot(std::ofstream& fout) {
     // Remember to flush the output to ensure the last action is written to file.
+    int flag = 0;
     Point p;
     State AI(player, board, next_valid_spots);
 
+    //corner
+    Point a(0, 0), b(0, 7), c(7, 0), d(7, 7);
+    for (Point it : AI.next_valid_spots) {
+        if (it == a || it == b || it == c || it == d) {
+            p = it;
+            flag = 1;
+            break;
+        }
+    }
+    if (!flag) {
+        //alphabeta
+        Point a(0, 0, INT_MIN), b(0, 0, INT_MAX);
+        p = alphabeta(AI, a, b, 1);
 
-    //alphabeta
-    Point a(0, 0, INT_MIN), b(0, 0, INT_MAX);
-    p = alphabeta(AI, a, b, 1);
-    
-    //minimax
-    //p = minmax(AI, 1);
+        //minimax
+        //p = minmax(AI, 1);
 
-    
-    fout << p.x << " " << p.y << std::endl;
+
+        fout << p.x << " " << p.y << std::endl;
+    }
     fout.flush();
 }
 
